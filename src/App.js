@@ -3,14 +3,12 @@ import $ from 'jquery';
 import logo from './logo.svg';
 import './App.css';
 
-// function handleClick(e) {
-//   e.preventDefault();
-//   console.log('The link was clicked.');
-// }
-
 class SearchBox extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      vids: []
+    }
   }
 
   setData(data) {
@@ -21,8 +19,16 @@ class SearchBox extends Component {
     console.log("error")
   }
 
+  handleSuccess(items) {
+    var videos = items;
+    this.setState({ vids: items }, () => {
+      console.log("state Updated", this.state.vids);
+      this.render()
+    });
+  }
+
   handleClick(e) {
-    let query = 'English pronountition';
+    let query = 'English pronountiation';
     let obj = {};
     e.preventDefault();
     $.ajax({
@@ -37,14 +43,13 @@ class SearchBox extends Component {
        }, {maxResults:20,pageToken:$("#pageToken").val()}),
        context: this,
        success: function ({ items }) {
-           console.log("data", items);
-           this.setState({ vids: items }, () => console.log("state Updated", this.state))
-           //setState({data});
+         this.handleSuccess(items);
        }.bind(this)
     });
   }
 
   render() {
+    console.log("render parent", this.state);
     return (
       <div>
       <form>
@@ -54,7 +59,7 @@ class SearchBox extends Component {
         </label>
         <input type="submit" value="Submit" onClick={this.handleClick.bind(this)} />
       </form>
-      <ListVids/>
+      <ListVids  videos={this.state.vids}/>
       </div>
     );
   }
@@ -65,23 +70,26 @@ class ListVids extends Component {
     console.log("constructor")
     super(props);
     this.state = {
+      title: "Youtube Search",
       vids: []
     }
   }
 
   render() {
-    console.log("it renders " , this.state)
-    if(this.state.vids.length === 0){
+    console.log("it renders " , this.props.videos.length)
+    if(this.props.videos.length === 0){
       return <p></p>
     } else {
     return (
       <div>
        <ul>
-        {
-          this.state.vids.map(function (vid) {
-          <li key={vid.id.toString()}>{vid.id}</li>
-          })
-        }
+       {
+         this.props.videos.map((vid) => <li key={vid.id.videoId.toString()}>
+          <span><p>{vid.id.videoId.toString()}</p>
+          <p>{vid.snippet.channelTitle.toString()}</p>
+          </span>
+          </li> )
+       }
        </ul>
       </div>
      );
@@ -90,11 +98,17 @@ class ListVids extends Component {
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: "Youtube Search"
+    }
+  }
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <h1>Youtube Search</h1>
+          <h1>{this.state.title}</h1>
             <SearchBox placeholder="Type your search..." className="App-intro"/>
         </div>
       </div>
