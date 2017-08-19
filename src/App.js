@@ -7,7 +7,8 @@ class SearchBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      vids: []
+      vids: [],
+      input: ''
     }
   }
 
@@ -16,19 +17,22 @@ class SearchBox extends Component {
   }
 
   setFake(){
-    console.log("error")
+    console.log("error");
+  }
+
+  handleChange(e) {
+    this.setState({ input: e.target.value });
   }
 
   handleSuccess(items) {
     var videos = items;
     this.setState({ vids: items }, () => {
       console.log("state Updated", this.state.vids);
-      this.render()
     });
   }
 
   handleClick(e) {
-    let query = 'English pronountiation';
+    let query = this.state.input;
     let obj = {};
     e.preventDefault();
     $.ajax({
@@ -54,10 +58,11 @@ class SearchBox extends Component {
       <div>
       <form>
         <label>
-          Name:
-          <input type="text" name="name" placeholder={this.props.placeholder} />
+          <input type="text" name="name" className="App-search" onChange={ this.handleChange.bind(this) } placeholder={this.props.placeholder} />
         </label>
-        <input type="submit" value="Submit" onClick={this.handleClick.bind(this)} />
+          <button type="submit" className="btn btn-dark" onClick={this.handleClick.bind(this)} >
+            Search
+          </button>
       </form>
       <ListVids  videos={this.state.vids}/>
       </div>
