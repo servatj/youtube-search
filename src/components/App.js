@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import SearchBox from './components/SearchBox';
+import SearchBox from './SearchBox';
 import $ from 'jquery';
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
+import '../App.css';
 
 class App extends Component {
   constructor(props) {
